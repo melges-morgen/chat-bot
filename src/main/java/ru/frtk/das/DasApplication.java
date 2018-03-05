@@ -77,7 +77,7 @@ public class DasApplication {
         public void createTemplate() throws Exception {
             Document document = new Document();
 
-            BaseFont times = BaseFont.createFont("build/libs/TIMES.TTF","cp1251",BaseFont.EMBEDDED);
+            BaseFont times = BaseFont.createFont("bin/TIMES.TTF","cp1251",BaseFont.EMBEDDED);
 
             PdfWriter.getInstance(document,
                     new FileOutputStream(date1 + ".pdf"));
