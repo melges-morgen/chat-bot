@@ -1,6 +1,7 @@
 package ru.frtk.das.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -24,7 +25,7 @@ public class UserProfile {
     private User user;
 
     @Type(type = "jsonb")
-    @Column(name = "additional_attributes")
+    @Column(name = "additional_attributes", columnDefinition = "json")
     private Map<ModelAttribute, Object> additionalAttributes;
 
     // TODO: Write mandatory user data

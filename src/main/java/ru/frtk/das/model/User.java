@@ -18,6 +18,7 @@ public class User {
     private Long vkId;
 
     @Column(name = "email")
+    @Convert(converter = Email.DatabaseConverter.class)
     private Email email;
 
     @Column(name = "salt")
