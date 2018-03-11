@@ -12,13 +12,13 @@ public class ModelAttribute {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "attribute_name", unique = true)
+    @Column(name = "attribute_name", unique = true, nullable = false)
     private String attributeName;
 
     @Column(name = "attribute_description")
     private String attributeDescription;
 
-    @Column(name = "class")
+    @Column(name = "class", nullable = false)
     private Class attributeClass;
 
     public UUID getId() {

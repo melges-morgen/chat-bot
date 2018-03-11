@@ -18,13 +18,12 @@ public class User {
     private Long vkId;
 
     @Column(name = "email")
-    @Convert(converter = Email.DatabaseConverter.class)
     private Email email;
 
-    @Column(name = "salt")
+    @Column(name = "salt", nullable = false)
     private String salt;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String hashedPassword;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")

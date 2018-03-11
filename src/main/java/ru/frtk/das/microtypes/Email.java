@@ -7,7 +7,7 @@ import javax.persistence.Converter;
 
 public class Email extends MicroType<String> {
 
-    @Converter
+    @Converter(autoApply = true)
     public static class DatabaseConverter implements AttributeConverter<Email, String> {
 
         @Override
