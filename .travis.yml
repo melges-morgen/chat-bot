@@ -1,0 +1,18 @@
+language: java
+sudo: false
+install: true
+addons:
+  sonarcloud:
+    organization: "melges-morgen-github"
+    token:
+      secure: "HBKQtDw7ASEzCq9DaU1oCgBXLOwFyI7b4i1TElxnhpgbtGYhsrevi+TXdsXB+5EF14gcA2XAQfYedXgAobifPIq243bg5FH2bYLEnDIUonnHum13DFTX86UOTNZ0fj/4qV3fuiWXgzQcaDMsZ/d43v9tHISmlbvCSnUOUr8DCBpOGZAmnCfbFxp+C4w6Gf6Zab3Ek6xIDWCqhuRj1DgbwGy5hlh1u+oO2Lox8bzAjgZi2GX7RIa/UjISUBG7aJpU5AP3IsOfTCmL2SnaaaV/54CHOJXh+xtmcwSBWQ2SW+T4tkdJWBmuvOTesTZ877WUR2SwHIsZaYxbkuoSLyRsmSCumhRcpBaNjWs1eOpb/RJCXf3hjg6iUyzUN8cMmBf0f4LqDkuQp61GlxOQGb9C+H/sdGK+xq4AsJc8s/lvM5NoMwQCddol4IfZfTESsEEr4RDE0FxTYd2Bmh1v3iegzUO0t6/sGSzSDnvoo7dcEyr3F+kr1GTE7ip+NctQuQ0RweO+TBvdEGWSeb4yDFQA/B0GkLGhw/5iibrlS6/GG4GO2YOrJmrP3fB4yuTVTrkp4dLm7W7PAVl22fRf+aDXcfTiPSObe0pq9IyovXXW8KCHZ5oFcIHBjE0LhyiuliyCaXT8UuEwpD+Afuog3wAtcyH6rxFZ9TTBVVhJAWbd7Wo="
+jdk:
+  - oraclejdk8
+script:
+  - ./gradlew sonarqube
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+    - '$HOME/.gradle'
+    - '.gradle'
