@@ -1,10 +1,8 @@
 package ru.frtk.das.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.net.URI;
@@ -13,9 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Entity
-@TypeDefs({
-        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class),
-})
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "user_profile")
 public class UserProfile {
     @Id
