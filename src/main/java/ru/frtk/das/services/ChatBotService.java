@@ -3,6 +3,7 @@ package ru.frtk.das.services;
 import com.petersamokhin.bots.sdk.clients.Group;
 import com.petersamokhin.bots.sdk.objects.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import javax.annotation.PostConstruct;
 import static java.lang.String.format;
 
 @Service
+@Profile("with-chat")
 public class ChatBotService {
     private final Group groupChat;
 
