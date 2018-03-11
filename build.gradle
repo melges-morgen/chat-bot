@@ -21,6 +21,11 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 
+wrapper {
+    gradleVersion = '4.6'
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 group = 'ru.frtk'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
