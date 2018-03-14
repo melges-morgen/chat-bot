@@ -26,6 +26,10 @@ public class Template {
             inverseJoinColumns=@JoinColumn(name="attribute_id", referencedColumnName="id"))
     private List<ModelAttribute> attributes;
 
+    @Lob
+    @Column(name = "template_text")
+    private String templateText;
+
     public UUID getId() {
         return id;
     }
@@ -56,5 +60,13 @@ public class Template {
 
     public void setAttributes(List<ModelAttribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getTemplateText() {
+        return templateText;
+    }
+
+    public void setTemplateText(String templateText) {
+        this.templateText = templateText;
     }
 }

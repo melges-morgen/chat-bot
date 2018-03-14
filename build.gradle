@@ -80,6 +80,9 @@ dependencies {
     // Markdown
     compile('com.vladsch.flexmark:flexmark-all:0.32.14')
 
+    // Mustache
+    compile('com.github.spullara.mustache.java:compiler:0.9.5')
+
     runtime('com.h2database:h2')
     runtime('mysql:mysql-connector-java')
 
