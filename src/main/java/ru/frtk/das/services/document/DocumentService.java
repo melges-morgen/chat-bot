@@ -1,5 +1,6 @@
 package ru.frtk.das.services.document;
 
+import com.github.mustachejava.Code;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.vladsch.flexmark.ast.Node;
@@ -16,6 +17,8 @@ import ru.frtk.das.model.UserRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static com.vladsch.flexmark.pdf.converter.PdfConverterExtension.exportToPdf;
@@ -39,8 +42,10 @@ public class DocumentService {
         Template template = templateRepository.getByTemplateNameEquals(templateName);
         try(ByteArrayOutputStream resultStream = new ByteArrayOutputStream()) {
             Mustache documentSource = new DefaultMustacheFactory().compile(template.getTemplateText());
-//            documentSource.getCodes()
-//            documentSource.
+
+            // Our model "attribute name" is the same as "code" in template
+            List<Code> templateAttributes = Arrays.asList(documentSource.getCodes());
+
             Node document = parser.parse(template.getTemplateText());
             exportToPdf(resultStream, htmlRenderer.render(document), "", options);
             return resultStream.toByteArray();
