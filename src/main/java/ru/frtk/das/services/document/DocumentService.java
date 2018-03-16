@@ -9,17 +9,20 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.profiles.pegdown.Extensions;
 import com.vladsch.flexmark.profiles.pegdown.PegdownOptionsAdapter;
 import com.vladsch.flexmark.util.options.DataHolder;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.frtk.das.model.Template;
 import ru.frtk.das.model.TemplateRepository;
-import ru.frtk.das.model.UserRepository;
+import ru.frtk.das.model.UserProfile;
+import ru.frtk.das.model.UserProfileRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.vladsch.flexmark.pdf.converter.PdfConverterExtension.exportToPdf;
 
@@ -30,12 +33,12 @@ public class DocumentService {
     private static final HtmlRenderer htmlRenderer = HtmlRenderer.builder(options).build();
 
     private final TemplateRepository templateRepository;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
 
     @Autowired
-    public DocumentService(TemplateRepository templateRepository, UserRepository userRepository) {
+    public DocumentService(TemplateRepository templateRepository, UserProfileRepository userProfileRepository) {
         this.templateRepository = templateRepository;
-        this.userRepository = userRepository;
+        this.userProfileRepository = userProfileRepository;
     }
 
     public byte[] generateDcoument(UUID userId, String templateName) {
@@ -44,7 +47,13 @@ public class DocumentService {
             Mustache documentSource = new DefaultMustacheFactory().compile(template.getTemplateText());
 
             // Our model "attribute name" is the same as "code" in template
-            List<Code> templateAttributes = Arrays.asList(documentSource.getCodes());
+            Set<String> templateAttributesNames = Arrays.stream(documentSource.getCodes())
+                    .map(Code::getName)
+                    .collect(Collectors.toSet());
+            UserProfile userProfile = userProfileRepository.getOne(userId);
+            userProfile.getAttributesValues().entrySet().stream()
+                    .map(e -> Pair.of(e.getKey().getAttributeName(), e.getValue()))
+                    .filter(e -> templateAttributesNames.contains(e.getLeft()))
 
             Node document = parser.parse(template.getTemplateText());
             exportToPdf(resultStream, htmlRenderer.render(document), "", options);

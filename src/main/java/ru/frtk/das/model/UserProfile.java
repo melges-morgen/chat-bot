@@ -1,5 +1,6 @@
 package ru.frtk.das.model;
 
+import com.google.common.collect.ImmutableMap;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -7,13 +8,18 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static ru.frtk.das.model.ModelAttribute.*;
+import static ru.frtk.das.model.ModelAttributeValue.modelAttributeValue;
 
 @Entity
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "user_profile")
 public class UserProfile {
+
     @Id
     @Column(name = "id")
     private UUID id;
@@ -35,8 +41,8 @@ public class UserProfile {
     private URI avatar;
 
     @Type(type = "jsonb")
-    @Column(name = "additional_attributes", columnDefinition = "clob")
-    private Map<ModelAttribute, Object> additionalAttributes;
+    @Column(name = "attributes_values", columnDefinition = "clob")
+    private Map<ModelAttribute<?>, ModelAttributeValue<?>> attributesValues = new HashMap<>();
 
     public UUID getId() {
         return id;
@@ -78,12 +84,17 @@ public class UserProfile {
         this.birthDate = birthDate;
     }
 
-    public Map<ModelAttribute, Object> getAdditionalAttributes() {
-        return additionalAttributes;
+    public Map<ModelAttribute<?>, ModelAttributeValue<?>> getAttributesValues() {
+        return ImmutableMap.<ModelAttribute<?>, ModelAttributeValue<?>>builder()
+                .putAll(attributesValues)
+                .put(nameAttribute(), modelAttributeValue(nameAttribute(), name))
+                .put(surnameAttribute(), modelAttributeValue(surnameAttribute(), surname))
+                .put(birthDateAttribute(), modelAttributeValue(birthDateAttribute(), birthDate))
+                .build();
     }
 
-    public void setAdditionalAttributes(Map<ModelAttribute, Object> additionalAttributes) {
-        this.additionalAttributes = additionalAttributes;
+    public void setAttributeValue(ModelAttribute<?> attribute, ModelAttributeValue<?> attributeValue) {
+        this.attributesValues.put(attribute, attributeValue);
     }
 
     public URI getAvatar() {
