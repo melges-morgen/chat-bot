@@ -37,6 +37,10 @@ public class ChatBotService {
     private static final Pattern GET_ALL_PATTERN = Pattern.compile("^/get$");
     private static final Pattern GET_PARAM_PATTERN = Pattern.compile("^/get \\S+$");
 
+    private static final String CREATE_DOCUMENT_STRING = "^/create<br>money:[0-9]+<br>reason:";
+    private static final Pattern CREATE_DOCUMENT_PATTERN = Pattern.compile(CREATE_DOCUMENT_STRING+"(\\w|\\W)*");
+
+
     private static final Pattern PHONE_PATTERN = Pattern.compile("^.+7.([0-9]{3}.)[0-9]{3}-[0-9]{2}-[0-9]{2}$");
     private static final Pattern GROUP_PATTERN = Pattern.compile("[0-9]1[1-9]");
     private final Group groupChat;
@@ -89,17 +93,16 @@ public class ChatBotService {
                     e.printStackTrace();
                 }
             }
-
+//            System.out.println(text);
             executeCommand(message);
         } else {
             return;
         }
 
-
 //        new Message()
 //                .from(groupChat)
 //                .to(message.authorId())
-//                .text(format("Your message was: %s", message.getText()))
+//                .text(String.format("Your message was: %s", message.getText()))
 //                .send();
     }
 
@@ -123,9 +126,24 @@ public class ChatBotService {
         } else if (GET_PARAM_PATTERN.matcher(text).find()) {
             String[] array = text.split(" ");
             getParam(message.getMessageId(), array[1]);
+        }else if(CREATE_DOCUMENT_PATTERN.matcher(text).find()){
+            createDocument(message);
         } else {
             returnMessageFromFile(message.authorId(), "unknown command");
         }
+    }
+
+    private void createDocument(Message message){
+        String text = message.getText();
+        //TODO: check that all params about user are presented
+        System.out.println(text);
+        String money = text.split("<br>")[1];
+        //TODO: use this params to create a document
+        Double amount = Double.valueOf(money.split(":")[1]);
+        String reason = text.split(CREATE_DOCUMENT_STRING)[1];
+
+        String s = String.format("amount:\n%f\nreason:\n%s", amount, reason);
+        returnMessage(message.authorId(), s);
     }
 
     /**
