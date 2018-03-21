@@ -93,7 +93,6 @@ public class ChatBotService {
                     e.printStackTrace();
                 }
             }
-//            System.out.println(text);
             executeCommand(message);
         } else {
             return;
@@ -136,7 +135,6 @@ public class ChatBotService {
     private void createDocument(Message message){
         String text = message.getText();
         //TODO: check that all params about user are presented
-        System.out.println(text);
         String money = text.split("<br>")[1];
         //TODO: use this params to create a document
         Double amount = Double.valueOf(money.split(":")[1]);
