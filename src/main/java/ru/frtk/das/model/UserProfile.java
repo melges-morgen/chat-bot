@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import ru.frtk.das.microtypes.TemplateValue;
 
 import javax.persistence.*;
 import java.net.URI;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static ru.frtk.das.microtypes.LocalDateValue.localDateValue;
+import static ru.frtk.das.microtypes.StringValue.stringValue;
 import static ru.frtk.das.model.ModelAttribute.*;
 import static ru.frtk.das.model.ModelAttributeValue.modelAttributeValue;
 
@@ -84,12 +87,13 @@ public class UserProfile {
         this.birthDate = birthDate;
     }
 
-    public Map<ModelAttribute<?>, ModelAttributeValue<?>> getAttributesValues() {
+    public Map<ModelAttribute<? extends TemplateValue>, ModelAttributeValue<? extends TemplateValue>>
+    getAttributesValues() {
         return ImmutableMap.<ModelAttribute<?>, ModelAttributeValue<?>>builder()
                 .putAll(attributesValues)
-                .put(nameAttribute(), modelAttributeValue(nameAttribute(), name))
-                .put(surnameAttribute(), modelAttributeValue(surnameAttribute(), surname))
-                .put(birthDateAttribute(), modelAttributeValue(birthDateAttribute(), birthDate))
+                .put(nameAttribute(), modelAttributeValue(nameAttribute(), stringValue(name)))
+                .put(surnameAttribute(), modelAttributeValue(surnameAttribute(), stringValue(surname)))
+                .put(birthDateAttribute(), modelAttributeValue(birthDateAttribute(), localDateValue(birthDate)))
                 .build();
     }
 

@@ -12,14 +12,13 @@ import com.vladsch.flexmark.util.options.DataHolder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.frtk.das.model.Template;
-import ru.frtk.das.model.TemplateRepository;
-import ru.frtk.das.model.UserProfile;
-import ru.frtk.das.model.UserProfileRepository;
+import ru.frtk.das.microtypes.TemplateValue;
+import ru.frtk.das.model.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,9 +50,14 @@ public class DocumentService {
                     .map(Code::getName)
                     .collect(Collectors.toSet());
             UserProfile userProfile = userProfileRepository.getOne(userId);
-            userProfile.getAttributesValues().entrySet().stream()
+            Map<String, ModelAttributeValue<? extends TemplateValue>> parameters = userProfile.getAttributesValues()
+                    .entrySet()
+                    .stream()
                     .map(e -> Pair.of(e.getKey().getAttributeName(), e.getValue()))
-                    .filter(e -> templateAttributesNames.contains(e.getLeft()))
+                    .filter(e -> templateAttributesNames.contains(e.getKey()))
+                    .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+
+            documentSource.execute()
 
             Node document = parser.parse(template.getTemplateText());
             exportToPdf(resultStream, htmlRenderer.render(document), "", options);

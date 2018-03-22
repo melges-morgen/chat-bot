@@ -1,19 +1,22 @@
 package ru.frtk.das.model;
 
+import ru.frtk.das.microtypes.LocalDateValue;
+import ru.frtk.das.microtypes.StringValue;
+import ru.frtk.das.microtypes.TemplateValue;
+
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "attributes")
-public class ModelAttribute<T> {
-    private final static ModelAttribute<String> NAME =
-            modelAttribute(UUID.fromString("name"), String.class).setAttributeName("name");
-    private final static ModelAttribute<String> SURNAME =
-            modelAttribute(UUID.fromString("surname"), String.class).setAttributeName("surname");
-    private final static ModelAttribute<LocalDate> BIRTH_DATE =
-            modelAttribute(UUID.fromString("birth_date"), LocalDate.class).setAttributeName("birth_date");
+public class ModelAttribute<T extends TemplateValue> {
+    private final static ModelAttribute<StringValue> NAME =
+            modelAttribute(UUID.fromString("name"), StringValue.class).setAttributeName("name");
+    private final static ModelAttribute<StringValue> SURNAME =
+            modelAttribute(UUID.fromString("surname"), StringValue.class).setAttributeName("surname");
+    private final static ModelAttribute<LocalDateValue> BIRTH_DATE =
+            modelAttribute(UUID.fromString("birth_date"), LocalDateValue.class).setAttributeName("birth_date");
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -29,19 +32,19 @@ public class ModelAttribute<T> {
     @Column(name = "class", nullable = false)
     private Class<T> attributeClass;
 
-    public static <T> ModelAttribute<T> modelAttribute(UUID id, Class<T> clazz) {
+    public static <T extends TemplateValue> ModelAttribute<T> modelAttribute(UUID id, Class<T> clazz) {
         return new ModelAttribute<T>().setAttributeClass(clazz);
     }
 
-    public static ModelAttribute<String> nameAttribute() {
+    public static ModelAttribute<StringValue> nameAttribute() {
         return NAME;
     }
 
-    public static ModelAttribute<String> surnameAttribute() {
+    public static ModelAttribute<StringValue> surnameAttribute() {
         return SURNAME;
     }
 
-    public static ModelAttribute<LocalDate> birthDateAttribute() {
+    public static ModelAttribute<LocalDateValue> birthDateAttribute() {
         return BIRTH_DATE;
     }
 
