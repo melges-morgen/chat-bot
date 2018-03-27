@@ -51,44 +51,49 @@ public class UserProfile {
         return id;
     }
 
-    public void setId(UUID id) {
+    public UserProfile setId(UUID id) {
         this.id = id;
+        return this;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public UserProfile setUser(User user) {
         this.user = user;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public UserProfile setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname) {
+    public UserProfile setSurname(String surname) {
         this.surname = surname;
+        return this;
     }
 
     public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    public UserProfile setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+        return this;
     }
 
-    public Map<ModelAttribute<? extends TemplateValue>, ModelAttributeValue<? extends TemplateValue>>
-    getAttributesValues() {
+    public Map<ModelAttribute<? extends TemplateValue>,
+            ModelAttributeValue<? extends TemplateValue>> getAttributesValues() {
         return ImmutableMap.<ModelAttribute<?>, ModelAttributeValue<?>>builder()
                 .putAll(attributesValues)
                 .put(nameAttribute(), modelAttributeValue(nameAttribute(), stringValue(name)))
@@ -97,15 +102,17 @@ public class UserProfile {
                 .build();
     }
 
-    public void setAttributeValue(ModelAttribute<?> attribute, ModelAttributeValue<?> attributeValue) {
+    public UserProfile setAttributeValue(ModelAttribute<?> attribute, ModelAttributeValue<?> attributeValue) {
         this.attributesValues.put(attribute, attributeValue);
+        return this;
     }
 
     public URI getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(URI avatar) {
+    public UserProfile setAvatar(URI avatar) {
         this.avatar = avatar;
+        return this;
     }
 }

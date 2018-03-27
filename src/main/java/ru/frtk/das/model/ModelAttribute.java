@@ -12,11 +12,16 @@ import java.util.UUID;
 @Table(name = "attributes")
 public class ModelAttribute<T extends TemplateValue> {
     private final static ModelAttribute<StringValue> NAME =
-            modelAttribute(UUID.fromString("name"), StringValue.class).setAttributeName("name");
+            modelAttribute(UUID.nameUUIDFromBytes("name".getBytes()), StringValue.class)
+                    .setAttributeName("name");
+
     private final static ModelAttribute<StringValue> SURNAME =
-            modelAttribute(UUID.fromString("surname"), StringValue.class).setAttributeName("surname");
+            modelAttribute(UUID.nameUUIDFromBytes("surname".getBytes()), StringValue.class)
+                    .setAttributeName("surname");
+
     private final static ModelAttribute<LocalDateValue> BIRTH_DATE =
-            modelAttribute(UUID.fromString("birth_date"), LocalDateValue.class).setAttributeName("birth_date");
+            modelAttribute(UUID.nameUUIDFromBytes("birth_date".getBytes()), LocalDateValue.class)
+                    .setAttributeName("birth_date");
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -33,7 +38,7 @@ public class ModelAttribute<T extends TemplateValue> {
     private Class<T> attributeClass;
 
     public static <T extends TemplateValue> ModelAttribute<T> modelAttribute(UUID id, Class<T> clazz) {
-        return new ModelAttribute<T>().setAttributeClass(clazz);
+        return new ModelAttribute<T>().setId(id).setAttributeClass(clazz);
     }
 
     public static ModelAttribute<StringValue> nameAttribute() {
@@ -95,5 +100,15 @@ public class ModelAttribute<T extends TemplateValue> {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ModelAttribute{" +
+                "id=" + id +
+                ", attributeName='" + attributeName + '\'' +
+                ", attributeDescription='" + attributeDescription + '\'' +
+                ", attributeClass=" + attributeClass +
+                '}';
     }
 }

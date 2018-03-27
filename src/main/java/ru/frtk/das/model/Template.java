@@ -34,39 +34,44 @@ public class Template {
         return id;
     }
 
-    public void setId(UUID id) {
+    public Template setId(UUID id) {
         this.id = id;
+        return this;
     }
 
     public String getTemplateName() {
         return templateName;
     }
 
-    public void setTemplateName(String templateName) {
+    public Template setTemplateName(String templateName) {
         this.templateName = templateName;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Template setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public List<ModelAttribute> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(List<ModelAttribute> attributes) {
+    public Template setAttributes(List<ModelAttribute> attributes) {
         this.attributes = attributes;
+        return this;
     }
 
     public String getTemplateText() {
         return templateText;
     }
 
-    public void setTemplateText(String templateText) {
+    public Template setTemplateText(String templateText) {
         this.templateText = templateText;
+        return this;
     }
 }
