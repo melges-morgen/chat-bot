@@ -15,6 +15,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,21 +33,13 @@ public class DocumentPdfRender {
                     template.getTemplateName()
             );
 
-            // Our model "attribute name" is the same as "code" in template
-            final Set<String> templateAttributesNames = Arrays.stream(documentSource.getCodes())
-                    .map(Code::getName)
-                    .collect(Collectors.toSet());
-
-            final Map<String, ModelAttributeValue<? extends TemplateValue>> filteredParameters = parameters
-                    .entrySet()
-                    .stream()
-                    .filter(e -> templateAttributesNames.contains(e.getKey()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
             final Writer htmlResultWriter = new StringWriter(template.getTemplateText().length());
 
-            PdfRendererBuilder pdfRendererBuilder =
-                    pdfRendererBuilder(documentSource.execute(htmlResultWriter, filteredParameters));
+            PdfRendererBuilder pdfRendererBuilder = pdfRendererBuilder(
+                    documentSource.execute(htmlResultWriter, extractParameters(documentSource, parameters))
+            );
+
             pdfRendererBuilder.toStream(resultStream);
             rethrow().wrap(pdfRendererBuilder::run).run();
 
@@ -68,7 +61,21 @@ public class DocumentPdfRender {
         return pdfRendererBuilder;
     }
 
-    private void checkParameters(Set<String> required) {
+    private static Map<String, ModelAttributeValue<? extends TemplateValue>> extractParameters(
+            Mustache template,
+            final Map<String, ModelAttributeValue<? extends TemplateValue>> parameters
+    ) {
+        // Our model "attribute name" is the same as "code" in template
+        final Set<String> requiredTemplateAttributes = Arrays.stream(template.getCodes())
+                .map(Code::getName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
+        requiredTemplateAttributes.removeAll(parameters.keySet());
+        if(requiredTemplateAttributes.size() > 0) {
+            throw new MissedTemplateAttributesException(requiredTemplateAttributes);
+        }
+
+        return parameters;
     }
 }

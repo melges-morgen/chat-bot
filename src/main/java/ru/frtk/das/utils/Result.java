@@ -1,4 +1,4 @@
-package ru.frtk.das.microtypes;
+package ru.frtk.das.utils;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -45,6 +45,10 @@ public class Result<R> {
     }
 
     public R orThrow() {
-        throw new IllegalStateException(exception);
+        if(isError) {
+            throw new IllegalStateException(exception);
+        } else {
+            return result;
+        }
     }
 }

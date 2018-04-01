@@ -33,6 +33,6 @@ public class ModelAttributeValue<T extends TemplateValue> {
 
     @Override
     public String toString() {
-        return value.toString();
+        return value.templateValue();
     }
 }

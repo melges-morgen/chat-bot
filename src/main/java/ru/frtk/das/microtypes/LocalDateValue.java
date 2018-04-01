@@ -3,8 +3,11 @@ package ru.frtk.das.microtypes;
 import com.snell.michael.kawaii.MicroType;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class LocalDateValue extends MicroType<LocalDate> implements TemplateValue {
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
     public static LocalDateValue localDateValue(LocalDate localDate) {
         return new LocalDateValue(localDate);
     }
@@ -15,11 +18,11 @@ public class LocalDateValue extends MicroType<LocalDate> implements TemplateValu
 
     @Override
     public TemplateValue valueOf(String string) {
-        return null;
+        return localDateValue(LocalDate.from(formatter.parse(string)));
     }
 
     @Override
     public String templateValue() {
-        return null;
+        return formatter.format(value);
     }
 }

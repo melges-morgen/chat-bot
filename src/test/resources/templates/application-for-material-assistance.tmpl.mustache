@@ -93,7 +93,7 @@
     <div id="hat-content">
         Директору школы ФРКТ <br />
         Дворковичу А.В. <br />
-        {{#sex_male}} от студента {{/sex_male}} {{^sex_male}} от студентки {{/sex_male}}
+        {{#is_male}} от студента {{/is_male}} {{^is_male}} от студентки {{/is_male}}
         {{group}} группы <br />
         {{surname}} {{name}} <br />
     </div>
@@ -107,7 +107,7 @@
 </div>
 <div class="footer">
     <div class="signature-container">
-        <div class="signature-date">{{date_today}}</div>
+        <div class="signature-date">{{date}}</div>
         <div class="signature-itself">_________________ / {{surname}} {{name}}</div>
     </div>
     <div class="signature-container">

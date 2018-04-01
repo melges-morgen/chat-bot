@@ -13,15 +13,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static ru.frtk.das.microtypes.BooleanValue.booleanValue;
 import static ru.frtk.das.microtypes.LocalDateValue.localDateValue;
 import static ru.frtk.das.microtypes.StringValue.stringValue;
-import static ru.frtk.das.model.ModelAttribute.*;
 import static ru.frtk.das.model.ModelAttributeValue.modelAttributeValue;
+import static ru.frtk.das.model.StandardAttributes.*;
+import static ru.frtk.das.model.UserProfile.Gender.MALE;
 
 @Entity
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "user_profile")
 public class UserProfile {
+    enum Gender {
+        MALE,
+        FEMALE
+    }
 
     @Id
     @Column(name = "id")
@@ -42,6 +48,10 @@ public class UserProfile {
 
     @Column(name = "avatar_uri")
     private URI avatar;
+
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Type(type = "jsonb")
     @Column(name = "attributes_values", columnDefinition = "clob")
@@ -99,6 +109,7 @@ public class UserProfile {
                 .put(nameAttribute(), modelAttributeValue(nameAttribute(), stringValue(name)))
                 .put(surnameAttribute(), modelAttributeValue(surnameAttribute(), stringValue(surname)))
                 .put(birthDateAttribute(), modelAttributeValue(birthDateAttribute(), localDateValue(birthDate)))
+                .put(isMaleAttribute(), modelAttributeValue(isMaleAttribute(), booleanValue(gender == MALE)))
                 .build();
     }
 
@@ -114,5 +125,13 @@ public class UserProfile {
     public UserProfile setAvatar(URI avatar) {
         this.avatar = avatar;
         return this;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }

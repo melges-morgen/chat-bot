@@ -1,7 +1,5 @@
 package ru.frtk.das.model;
 
-import ru.frtk.das.microtypes.LocalDateValue;
-import ru.frtk.das.microtypes.StringValue;
 import ru.frtk.das.microtypes.TemplateValue;
 
 import javax.persistence.*;
@@ -11,17 +9,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "attributes")
 public class ModelAttribute<T extends TemplateValue> {
-    private final static ModelAttribute<StringValue> NAME =
-            modelAttribute(UUID.nameUUIDFromBytes("name".getBytes()), StringValue.class)
-                    .setAttributeName("name");
 
-    private final static ModelAttribute<StringValue> SURNAME =
-            modelAttribute(UUID.nameUUIDFromBytes("surname".getBytes()), StringValue.class)
-                    .setAttributeName("surname");
-
-    private final static ModelAttribute<LocalDateValue> BIRTH_DATE =
-            modelAttribute(UUID.nameUUIDFromBytes("birth_date".getBytes()), LocalDateValue.class)
-                    .setAttributeName("birth_date");
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -39,18 +27,6 @@ public class ModelAttribute<T extends TemplateValue> {
 
     public static <T extends TemplateValue> ModelAttribute<T> modelAttribute(UUID id, Class<T> clazz) {
         return new ModelAttribute<T>().setId(id).setAttributeClass(clazz);
-    }
-
-    public static ModelAttribute<StringValue> nameAttribute() {
-        return NAME;
-    }
-
-    public static ModelAttribute<StringValue> surnameAttribute() {
-        return SURNAME;
-    }
-
-    public static ModelAttribute<LocalDateValue> birthDateAttribute() {
-        return BIRTH_DATE;
     }
 
     public UUID getId() {

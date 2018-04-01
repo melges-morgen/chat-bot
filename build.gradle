@@ -28,7 +28,7 @@ wrapper {
 
 group = 'ru.frtk'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
+sourceCompatibility = 1.10
 
 ext {
     queryDslVersion = '4.1.4'
