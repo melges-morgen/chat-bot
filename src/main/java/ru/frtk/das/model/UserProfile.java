@@ -1,9 +1,7 @@
 package ru.frtk.das.model;
 
 import com.google.common.collect.ImmutableMap;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.GenericGenerator;
 import ru.frtk.das.microtypes.TemplateValue;
 
 import javax.persistence.*;
@@ -11,6 +9,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import static ru.frtk.das.microtypes.BooleanValue.booleanValue;
@@ -21,16 +20,17 @@ import static ru.frtk.das.model.StandardAttributes.*;
 import static ru.frtk.das.model.UserProfile.Gender.MALE;
 
 @Entity
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "user_profile")
 public class UserProfile {
-    enum Gender {
+    public enum Gender {
         MALE,
         FEMALE
     }
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -53,9 +53,16 @@ public class UserProfile {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Type(type = "jsonb")
-    @Column(name = "attributes_values", columnDefinition = "clob")
+    @Column(name = "attributes_values", columnDefinition = "text")
+    @Convert(converter = AttributesValuesConverter.class)
     private Map<ModelAttribute<?>, ModelAttributeValue<?>> attributesValues = new HashMap<>();
+
+    public UserProfile() {
+    }
+
+    public UserProfile(User user) {
+        this.user = user;
+    }
 
     public UUID getId() {
         return id;
@@ -131,7 +138,43 @@ public class UserProfile {
         return gender;
     }
 
-    public void setGender(Gender gender) {
+    public UserProfile setGender(Gender gender) {
         this.gender = gender;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "UserProfile{" +
+                "id=" + id +
+                ", user=" + user.getId() +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthDate=" + birthDate +
+                ", avatar=" + avatar +
+                ", gender=" + gender +
+                ", attributesValues=" + attributesValues +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserProfile that = (UserProfile) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(user, that.user) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(surname, that.surname) &&
+                Objects.equals(birthDate, that.birthDate) &&
+                Objects.equals(avatar, that.avatar) &&
+                gender == that.gender &&
+                Objects.equals(attributesValues, that.attributesValues);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, user, name, surname, birthDate, avatar, gender, attributesValues);
     }
 }

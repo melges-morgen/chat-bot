@@ -6,29 +6,31 @@ import com.petersamokhin.bots.sdk.clients.Group;
 import com.petersamokhin.bots.sdk.objects.Message;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
-import com.vk.api.sdk.exceptions.ApiException;
-import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
-import com.vk.api.sdk.objects.users.UserXtrCounters;
-import com.vk.api.sdk.queries.users.UserField;
-import com.vk.api.sdk.queries.users.UsersNameCase;
+import org.apache.logging.log4j.CloseableThreadContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.frtk.das.dataasset.Params;
+import ru.frtk.das.model.User;
 
 import javax.annotation.PostConstruct;
-
-
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
+
+import static com.diffplug.common.base.Errors.log;
+import static com.diffplug.common.base.Errors.rethrow;
+import static java.lang.String.format;
 
 
 @Service
 @Profile("with-chat")
 public class ChatBotService {
+
+    private static Logger logger = LogManager.getLogger(ChatBotService.class);
 
     private static final String MESSAGES_FILE = "./src/main/resources/messages.json";
 
@@ -49,62 +51,33 @@ public class ChatBotService {
     private final ObjectMapper mapper;
     private final VkApiClient vk;
     private final GroupActor actor;
-    private JsonNode node;
+    private final UserService userService;
+    private JsonNode localizedMessages;
 
     @Autowired
-    public ChatBotService(Group groupChat) {
+    public ChatBotService(Group groupChat, UserService userService) {
         this.groupChat = groupChat;
+        this.userService = userService;
         this.mapper = new ObjectMapper();
         this.vk = new VkApiClient(HttpTransportClient.getInstance());
         this.actor = new GroupActor(groupChat.getId(), groupChat.getAccessToken());
-
+        this.localizedMessages = rethrow().get(() -> mapper.readTree(new File(MESSAGES_FILE)));
     }
 
-    @PostConstruct
-    public void onInit(){
-        try {
-            node = mapper.readTree(new File(MESSAGES_FILE));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     @PostConstruct
     public void registerMessageHandlers() {
-        groupChat.onSimpleTextMessage(this::onTextMessage);
+        groupChat.onSimpleTextMessage(t -> log().wrap(() -> this.onTextMessage(t)).run());
     }
 
     protected void onTextMessage(Message message) {
         String text = message.getText();
-        if (text.startsWith("/")) {
-            //the message is addressed to the bot
-            //Check User in DB
-            //TODO: if there is no User in DB, create it
-            if (false) {
-                try {
-                    List<UserXtrCounters> users = vk.users()
-                            .get(actor)
-                            .userIds(String.valueOf(message.authorId()))
-                            .fields(UserField.CONTACTS)
-                            .nameCase(UsersNameCase.GENITIVE)
-                            .execute();
-                    UserXtrCounters user = users.get(0);
-
-                } catch (ApiException e) {
-                    e.printStackTrace();
-                } catch (ClientException e) {
-                    e.printStackTrace();
-                }
+        if (text.startsWith("/")) { // Command for bot
+            try(final CloseableThreadContext.Instance ctc =
+                    loggingSetup(userService.userByVkIdOrRegister(message.authorId().longValue()))) {
+                logger.debug("Incoming request: {}", text);
+                executeCommand(message);
             }
-            executeCommand(message);
-        } else {
-            return;
         }
-
-//        new Message()
-//                .from(groupChat)
-//                .to(message.authorId())
-//                .text(String.format("Your message was: %s", message.getText()))
-//                .send();
     }
 
     /**
@@ -142,7 +115,7 @@ public class ChatBotService {
         Double amount = Double.valueOf(money.split(":")[1]);
         String reason = text.split(CREATE_DOCUMENT_STRING)[1];
 
-        String s = String.format("amount:\n%f\nreason:\n%s", amount, reason);
+        String s = format("amount:\n%f\nreason:\n%s", amount, reason);
         returnMessage(message.authorId(), s);
     }
 
@@ -152,27 +125,10 @@ public class ChatBotService {
      * @param param - value {@link Params#commandValue}
      */
     private void setParam(Integer userId, String param, String value) {
-        Params settingParam = Params.getParam(param);
-        if(null == settingParam){
-            returnMessage(userId, "Неправильная команда. Список команд можно узнать /help");
-            return;
+        User user = userService.userByVkIdOrRegister(userId.longValue());
+        if(!userService.changeAttributeValue(user, param, value)) {
+            returnMessage(userId, format("No attribute %s", param));
         }
-        //checks validity of phone number
-        if(Params.PHONE_NUMBER == settingParam){
-            if (!PHONE_PATTERN.matcher(value).find()){
-                returnMessageFromFile(userId, "wrong telephone number");
-                return;
-            }
-        }
-        //checks validity of group number
-        if(Params.GROUP_NUMBER == settingParam){
-            if (!GROUP_PATTERN.matcher(value).find()){
-                returnMessageFromFile(userId, "wrong group number");
-                return;
-            }
-        }
-
-        //TODO: set param to user
 
         getParam(userId, param);
     }
@@ -186,7 +142,7 @@ public class ChatBotService {
         new Message()
                 .from(groupChat)
                 .to(userId)
-                .text(String.format(""))
+                .text(format(""))
                 .send();
     }
 
@@ -211,7 +167,7 @@ public class ChatBotService {
         new Message()
                 .from(groupChat)
                 .to(userId)
-                .text(String.format("Поле \"%s\" имеет значение \"%s\"", param, value))
+                .text(format("Поле \"%s\" имеет значение \"%s\"", param, value))
                 .send();
     }
 
@@ -222,7 +178,7 @@ public class ChatBotService {
      * @param element - key in file
      */
     private void returnMessageFromFile(Integer userId, String element){
-        returnMessage(userId, node.get(element).asText());
+        returnMessage(userId, localizedMessages.get(element).asText());
     }
 
     /**
@@ -236,5 +192,11 @@ public class ChatBotService {
                 .to(userId)
                 .text(text)
                 .send();
+    }
+
+    private CloseableThreadContext.Instance loggingSetup(User user) {
+        return CloseableThreadContext
+                .put("userId", user.getId().toString())
+                .put("requestId", format("%x", UUID.randomUUID().getLeastSignificantBits()));
     }
 }

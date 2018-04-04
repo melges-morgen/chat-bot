@@ -41,7 +41,8 @@ public class DocumentService {
         final Template template = templateRepository.getByTemplateNameEquals(templateName);
         final UserProfile userProfile = userProfileRepository.getOne(userId);
 
-        final var parameters = ImmutableMap.<String, ModelAttributeValue<? extends TemplateValue>>builder()
+        final Map<String, ModelAttributeValue<? extends TemplateValue>> parameters =
+                ImmutableMap.<String, ModelAttributeValue<? extends TemplateValue>>builder()
                 .putAll(userProfile.getAttributesValues()
                         .entrySet()
                         .stream()

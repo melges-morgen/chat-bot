@@ -22,5 +22,4 @@ public class VkConfig {
     public String getAccessToken() {
         return accessToken;
     }
-
 }

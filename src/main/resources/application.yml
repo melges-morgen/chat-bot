@@ -1,5 +1,18 @@
 vk:
   group-id: 163040457
   access-token: f0a0d4f983cd98b61cddeefd1e028175abde9337305cd74f23550ee8f32adc947568c3149331567e5ec77
+logging:
+  level:
+    root: info
+    ru.frtk.das: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%-36X{userId}] [%-16X{requestId}] --- [%15.15t] %-40.40c{1.} : %m%n%ex"
+
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.99.100/frtk-doc-bot?characterEncoding=UTF-8
+    username: frtk-doc-bot
+    password: phooGh3a
+  jpa.hibernate.ddl-auto: create-drop
 
 #spring.profiles.active: with-chat

@@ -1,5 +1,6 @@
 package ru.frtk.das.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import ru.frtk.das.microtypes.Email;
 
 import javax.persistence.*;
@@ -10,8 +11,9 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(name = "vk_id", unique = true)
@@ -20,60 +22,82 @@ public class User {
     @Column(name = "email")
     private Email email;
 
-    @Column(name = "salt", nullable = false)
+    @Column(name = "salt")
     private String salt;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String hashedPassword;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
-    private UserProfile profile;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
+    private UserProfile profile = new UserProfile(this);
+
+    public static User user() {
+        return new User();
+    }
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public User setId(UUID id) {
         this.id = id;
+        return this;
     }
 
     public Long getVkId() {
         return vkId;
     }
 
-    public void setVkId(Long vkId) {
+    public User setVkId(Long vkId) {
         this.vkId = vkId;
+        return this;
     }
 
     public Email getEmail() {
         return email;
     }
 
-    public void setEmail(Email email) {
+    public User setEmail(Email email) {
         this.email = email;
+        return this;
     }
 
     public String getSalt() {
         return salt;
     }
 
-    public void setSalt(String salt) {
+    public User setSalt(String salt) {
         this.salt = salt;
+        return this;
     }
 
     public String getHashedPassword() {
         return hashedPassword;
     }
 
-    public void setHashedPassword(String hashedPassword) {
+    public User setHashedPassword(String hashedPassword) {
         this.hashedPassword = hashedPassword;
+        return this;
     }
 
     public UserProfile getProfile() {
         return profile;
     }
 
-    public void setProfile(UserProfile profile) {
+    public User setProfile(UserProfile profile) {
         this.profile = profile;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", vkId=" + vkId +
+                ", email=" + email +
+                ", salt=<secret>" +
+                ", hashedPassword=<secret>" +
+                ", profile=" + profile +
+                '}';
     }
 }

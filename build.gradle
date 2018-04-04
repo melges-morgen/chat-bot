@@ -28,7 +28,7 @@ wrapper {
 
 group = 'ru.frtk'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.10
+sourceCompatibility = 1.8
 
 ext {
     queryDslVersion = '4.1.4'
@@ -90,6 +90,9 @@ dependencies {
     compile('com.github.spullara.mustache.java:compiler:0.9.5')
     // Durian
     compile("com.diffplug.durian:durian:3.4.0")
+
+    // Padeg
+    compile("com.github.aleksandy:petrovich:1.0.0")
 
     runtime('com.h2database:h2')
     runtime('mysql:mysql-connector-java')

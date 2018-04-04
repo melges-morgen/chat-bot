@@ -1,5 +1,7 @@
 package ru.frtk.das.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.frtk.das.microtypes.TemplateValue;
 
 import java.util.Objects;
@@ -13,7 +15,10 @@ public class ModelAttributeValue<T extends TemplateValue> {
         return new ModelAttributeValue<>(attribute, value);
     }
 
-    public ModelAttributeValue(ModelAttribute<T> attribute, T value) {
+    @JsonCreator
+    public ModelAttributeValue(
+            @JsonProperty("attribute") ModelAttribute<T> attribute,
+            @JsonProperty("value") T value) {
         this.attribute = attribute;
         this.value = value;
     }
@@ -23,12 +28,13 @@ public class ModelAttributeValue<T extends TemplateValue> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ModelAttributeValue<?> that = (ModelAttributeValue<?>) o;
-        return Objects.equals(attribute, that.attribute);
+        return Objects.equals(attribute, that.attribute) &&
+                Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attribute);
+        return Objects.hash(attribute, value);
     }
 
     @Override

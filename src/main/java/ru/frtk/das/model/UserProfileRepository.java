@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface UserProfileRepository
         extends JpaRepository<UserProfile, UUID>, QuerydslPredicateExecutor<UserProfile> {
+    UserProfile getUserProfileByUser(User user);
 }

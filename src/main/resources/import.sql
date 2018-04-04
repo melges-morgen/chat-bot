@@ -1,2 +1,1 @@
-INSERT into attributes (id, type_meta, class_id, attribute_description, attribute_name)
-	VALUES ("9ba2bfee-115e-4181-8bd1-b72fac4e171f", "StringValue", null, "Attribute", "test_attr");
+INSERT INTO attributes (id, attribute_class, attribute_description, attribute_name) VALUES (unhex("9ba2bfee115e41818bd1b72fac4e171f"), "ru.frtk.das.microtypes.StringValue", "Attribute", "test_attr");

@@ -1,5 +1,6 @@
 package ru.frtk.das.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import ru.frtk.das.microtypes.TemplateValue;
 
 import javax.persistence.*;
@@ -10,10 +11,10 @@ import java.util.UUID;
 @Table(name = "attributes")
 public class ModelAttribute<T extends TemplateValue> {
 
-
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "id", updatable = false)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "id", updatable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(name = "attribute_name", unique = true, nullable = false, updatable = false)
@@ -22,8 +23,9 @@ public class ModelAttribute<T extends TemplateValue> {
     @Column(name = "attribute_description")
     private String attributeDescription;
 
-    @Column(name = "class", nullable = false)
-    private Class<T> attributeClass;
+    @Column(name = "attribute_class")
+    @Convert(converter = ClassConverter.class)
+    private Class attributeClass;
 
     public static <T extends TemplateValue> ModelAttribute<T> modelAttribute(UUID id, Class<T> clazz) {
         return new ModelAttribute<T>().setId(id).setAttributeClass(clazz);
@@ -70,12 +72,15 @@ public class ModelAttribute<T extends TemplateValue> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ModelAttribute<?> that = (ModelAttribute<?>) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(attributeName, that.attributeName) &&
+                Objects.equals(attributeDescription, that.attributeDescription) &&
+                Objects.equals(attributeClass, that.attributeClass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, attributeName, attributeDescription, attributeClass);
     }
 
     @Override

@@ -11,20 +11,29 @@ public class StandardAttributes {
     private final static ModelAttribute<StringValue> NAME =
             modelAttribute(nameUUIDFromBytes("name".getBytes()), StringValue.class)
                     .setAttributeName("name");
+    private final static ModelAttribute<StringValue> NAME_GEN =
+            modelAttribute(nameUUIDFromBytes("name_gen".getBytes()), StringValue.class)
+                    .setAttributeName("name_gen");
 
     private final static ModelAttribute<StringValue> SURNAME =
             modelAttribute(nameUUIDFromBytes("surname".getBytes()), StringValue.class)
                     .setAttributeName("surname");
+    private final static ModelAttribute<StringValue> SURNAME_GEN =
+            modelAttribute(nameUUIDFromBytes("surname_gen".getBytes()), StringValue.class)
+                    .setAttributeName("surname_gen");
 
     private final static ModelAttribute<LocalDateValue> BIRTH_DATE =
             modelAttribute(nameUUIDFromBytes("birth_date".getBytes()), LocalDateValue.class)
                     .setAttributeName("birth_date");
+
     private static final ModelAttribute<StringValue> TEMPLATE_NAME =
             modelAttribute(nameUUIDFromBytes("template_name".getBytes()), StringValue.class)
                     .setAttributeName("template_name");
+
     private static final ModelAttribute<BooleanValue> IS_MAIL_ATTRIBUTE =
             modelAttribute(nameUUIDFromBytes("is_male".getBytes()), BooleanValue.class)
                     .setAttributeName("is_male");
+
     private static final ModelAttribute<LocalDateValue> DATE_TODAY_ATTRIBUTE =
             modelAttribute(nameUUIDFromBytes("date_today".getBytes()), LocalDateValue.class)
             .setAttributeName("date_today");
@@ -33,8 +42,16 @@ public class StandardAttributes {
         return NAME;
     }
 
+    public static ModelAttribute<StringValue> nameGenAttribute() {
+        return NAME_GEN;
+    }
+
     public static ModelAttribute<StringValue> surnameAttribute() {
         return SURNAME;
+    }
+
+    public static ModelAttribute<StringValue> surnameGenAttribute() {
+        return SURNAME_GEN;
     }
 
     public static ModelAttribute<LocalDateValue> birthDateAttribute() {

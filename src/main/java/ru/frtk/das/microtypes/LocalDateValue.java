@@ -1,5 +1,7 @@
 package ru.frtk.das.microtypes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.snell.michael.kawaii.MicroType;
 
 import java.time.LocalDate;
@@ -12,7 +14,8 @@ public class LocalDateValue extends MicroType<LocalDate> implements TemplateValu
         return new LocalDateValue(localDate);
     }
 
-    public LocalDateValue(LocalDate value) {
+    @JsonCreator
+    public LocalDateValue(@JsonProperty("value") LocalDate value) {
         super(value);
     }
 

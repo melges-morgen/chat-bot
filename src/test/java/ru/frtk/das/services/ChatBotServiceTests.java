@@ -13,9 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,7 +35,7 @@ public class ChatBotServiceTests {
         when(group.api()).thenReturn(api);
         doNothing().when(api).call(anyString(), argumentCaptor.capture(), any());
 
-        sut = new ChatBotService(group);
+        sut = new ChatBotService(group, mock(UserService.class));
     }
 //    @Ignore
     @Test

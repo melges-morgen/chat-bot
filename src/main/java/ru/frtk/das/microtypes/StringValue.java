@@ -1,5 +1,7 @@
 package ru.frtk.das.microtypes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.snell.michael.kawaii.MicroType;
 
 public class StringValue extends MicroType<String> implements TemplateValue {
@@ -8,7 +10,8 @@ public class StringValue extends MicroType<String> implements TemplateValue {
         return new StringValue(value);
     }
 
-    public StringValue(String value) {
+    @JsonCreator
+    public StringValue(@JsonProperty("value") String value) {
         super(value);
     }
 

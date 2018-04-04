@@ -1,5 +1,7 @@
 package ru.frtk.das.microtypes;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.snell.michael.kawaii.MicroType;
 
 public class BooleanValue extends MicroType<Boolean> implements TemplateValue<Boolean> {
@@ -7,7 +9,8 @@ public class BooleanValue extends MicroType<Boolean> implements TemplateValue<Bo
         return new BooleanValue(value);
     }
 
-    public BooleanValue(Boolean value) {
+    @JsonCreator
+    public BooleanValue(@JsonProperty("value") Boolean value) {
         super(value);
     }
 
