@@ -11,9 +11,5 @@ import static org.mockito.Mockito.mock;
 
 @Configuration
 public class TestApplicationConfig {
-    @Bean
-    @Primary
-    public Group testVkBotGroup() {
-        return mock(Group.class);
-    }
+
 }

@@ -53,7 +53,7 @@ public class UserProfile {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "attributes_values", columnDefinition = "text")
+    @Column(name = "attributes_values", columnDefinition = "json")
     @Convert(converter = AttributesValuesConverter.class)
     private Map<ModelAttribute<?>, ModelAttributeValue<?>> attributesValues = new HashMap<>();
 

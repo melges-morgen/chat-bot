@@ -66,7 +66,7 @@ public class ChatBotService {
 
     @PostConstruct
     public void registerMessageHandlers() {
-        groupChat.onSimpleTextMessage(t -> log().wrap(() -> this.onTextMessage(t)).run());
+        groupChat.onSimpleTextMessage(t -> log().run(() -> this.onTextMessage(t)));
     }
 
     protected void onTextMessage(Message message) {
