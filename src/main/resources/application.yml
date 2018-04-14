@@ -15,6 +15,6 @@ spring:
     password: phooGh3a
   jpa:
     hibernate.ddl-auto: create-drop
-    properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL57Dialect
 
 #spring.profiles.active: with-chat
