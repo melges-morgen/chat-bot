@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.frtk.das.dataasset.Params;
+import ru.frtk.das.model.ModelAttribute;
+import ru.frtk.das.model.ModelAttributeValue;
 import ru.frtk.das.model.User;
 
 import javax.annotation.PostConstruct;
@@ -52,12 +54,14 @@ public class ChatBotService {
     private final VkApiClient vk;
     private final GroupActor actor;
     private final UserService userService;
+    private final AttributesService attributesService;
     private JsonNode localizedMessages;
 
     @Autowired
-    public ChatBotService(Group groupChat, UserService userService) {
+    public ChatBotService(Group groupChat, UserService userService, AttributesService attributesService) {
         this.groupChat = groupChat;
         this.userService = userService;
+        this.attributesService = attributesService;
         this.mapper = new ObjectMapper();
         this.vk = new VkApiClient(HttpTransportClient.getInstance());
         this.actor = new GroupActor(groupChat.getId(), groupChat.getAccessToken());
@@ -89,7 +93,7 @@ public class ChatBotService {
         if (HELLO_PATTERN.matcher(text).find()){
             returnMessageFromFile(message.authorId(), "hello message");
         } else if(PARAMS_PATTERN.matcher(text).find()){
-            returnMessageFromFile(message.authorId(), "params");
+            returnAvailableParams(message.authorId());
         } else if(HELP_PATTERN.matcher(text).find()){
             returnMessageFromFile(message.authorId(), "help message");
         } else if (SET_PATTERN.matcher(text).find()) {
@@ -105,6 +109,17 @@ public class ChatBotService {
         } else {
             returnMessageFromFile(message.authorId(), "unknown command");
         }
+    }
+
+    private void returnAvailableParams(Integer userVkId) {
+        String responseText = attributesService.allAttributesForProfile().stream()
+                .map(a -> String.format("%s - %s", a.getAttributeName(), a.getAttributeDescription()))
+                .collect(StringBuilder::new,
+                        (o, s) -> o.append('\n')
+                                .append(s),
+                        (o1, o2) -> o1.append('\n').append(o2.toString())
+                ).toString();
+        returnMessage(userVkId, responseText);
     }
 
     private void createDocument(Message message){
@@ -151,23 +166,24 @@ public class ChatBotService {
      * @param userId
      * @param param - value {@link Params#commandValue}
      */
-    private void getParam(Integer userId, String param){
-
-
-        Params gettingParam = Params.getParam(param);
-        if(null == gettingParam){
-            returnMessage(userId, "Неправильная команда. Список команд можно узнать /help");
+    private void getParam(Integer userId, String param) {
+        if (!attributesService.isSupportedAttribute(param)) {
+            returnMessage(userId, format("Not supported attribute %s", param));
             return;
         }
 
-        //TODO: get Info from DB and send response
-            String value = null;
-
+        String responseText = attributesService.findAttribute(param)
+                .map(a -> userService.userByVkIdOrRegister(userId.longValue())
+                        .getProfile()
+                        .getAttributesValues()
+                        .get(a)
+                ).map(v -> format("Значение: %s", v.value.templateValue()))
+                .orElse("Нет значения");
 
         new Message()
                 .from(groupChat)
                 .to(userId)
-                .text(format("Поле \"%s\" имеет значение \"%s\"", param, value))
+                .text(responseText)
                 .send();
     }
 

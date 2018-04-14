@@ -17,4 +17,4 @@ spring:
     hibernate.ddl-auto: create-drop
     properties.hibernate.dialect: org.hibernate.dialect.MySQL57Dialect
 
-#spring.profiles.active: with-chat
+spring.profiles.active: with-chat

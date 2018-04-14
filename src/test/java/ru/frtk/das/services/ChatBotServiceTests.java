@@ -38,7 +38,7 @@ public class ChatBotServiceTests {
         when(group.api()).thenReturn(api);
         doNothing().when(api).call(anyString(), argumentCaptor.capture(), any());
 
-        sut = new ChatBotService(group, mock(UserService.class));
+        sut = new ChatBotService(group, mock(UserService.class), attributesService);
     }
 //    @Ignore
     @Test

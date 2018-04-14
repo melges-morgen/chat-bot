@@ -27,6 +27,9 @@ public class ModelAttribute<T extends TemplateValue> {
     @Convert(converter = ClassConverter.class)
     private Class attributeClass;
 
+    @Column(name = "template_only", nullable = false)
+    private boolean templateOnly;
+
     public static <T extends TemplateValue> ModelAttribute<T> modelAttribute(UUID id, Class<T> clazz) {
         return new ModelAttribute<T>().setId(id).setAttributeClass(clazz);
     }
@@ -67,6 +70,19 @@ public class ModelAttribute<T extends TemplateValue> {
         return this;
     }
 
+    public boolean isTemplateOnly() {
+        return templateOnly;
+    }
+
+    public boolean isForProfile() {
+        return !templateOnly;
+    }
+
+    public ModelAttribute templateOnly(boolean templateOnly) {
+        this.templateOnly = templateOnly;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,7 +91,8 @@ public class ModelAttribute<T extends TemplateValue> {
         return Objects.equals(id, that.id) &&
                 Objects.equals(attributeName, that.attributeName) &&
                 Objects.equals(attributeDescription, that.attributeDescription) &&
-                Objects.equals(attributeClass, that.attributeClass);
+                Objects.equals(attributeClass, that.attributeClass) &&
+                Objects.equals(templateOnly, that.templateOnly);
     }
 
     @Override
