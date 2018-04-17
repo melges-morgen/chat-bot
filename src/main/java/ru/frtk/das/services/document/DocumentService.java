@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import static ru.frtk.das.microtypes.LocalDateValue.localDateValue;
 import static ru.frtk.das.microtypes.StringValue.stringValue;
 import static ru.frtk.das.model.ModelAttributeValue.modelAttributeValue;
-import static ru.frtk.das.model.StandardAttributes.dateTodayAttribute;
-import static ru.frtk.das.model.StandardAttributes.templateNameAttribute;
+import static ru.frtk.das.model.StandardAttributesProvider.dateTodayAttribute;
+import static ru.frtk.das.model.StandardAttributesProvider.templateNameAttribute;
 import static ru.frtk.das.services.document.DocumentPdfRender.render;
 import static ru.frtk.das.utils.Result.resultOf;
 

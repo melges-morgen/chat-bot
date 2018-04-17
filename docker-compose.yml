@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql
+    container_name: test-mysql
+    ports:
+      - 3306:3306
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      GOSU_VERSION: 1.7
+      MYSQL_MAJOR: 5.7
+      MYSQL_VERSION: 5.7.20-1debian8
+      MYSQL_ROOT_PASSWORD: Saehohl4
+      MYSQL_USER: frtk-doc-bot
+      MYSQL_DATABASE: frtk-doc-bot
+      MYSQL_PASSWORD: phooGh3a
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_USER_HOST: "%"
+    command:
+      - --character-set-server=utf8
+      - --collation-server=utf8_general_ci

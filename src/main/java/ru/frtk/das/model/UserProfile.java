@@ -16,7 +16,6 @@ import static ru.frtk.das.microtypes.BooleanValue.booleanValue;
 import static ru.frtk.das.microtypes.LocalDateValue.localDateValue;
 import static ru.frtk.das.microtypes.StringValue.stringValue;
 import static ru.frtk.das.model.ModelAttributeValue.modelAttributeValue;
-import static ru.frtk.das.model.StandardAttributes.*;
 import static ru.frtk.das.model.UserProfile.Gender.MALE;
 
 @Entity

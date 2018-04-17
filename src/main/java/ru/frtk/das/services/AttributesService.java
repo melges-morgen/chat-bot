@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.frtk.das.microtypes.TemplateValue;
 import ru.frtk.das.model.ModelAttribute;
 import ru.frtk.das.model.ModelAttributeRepository;
-import ru.frtk.das.model.Template;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class AttributesService {
 
     public Collection<ModelAttribute> allAttributesForProfile() {
         return modelAttributeRepo.findAll().stream()
-                .filter(ModelAttribute::isForProfile)
+                .filter(ModelAttribute::isVisible)
                 .collect(Collectors.toSet());
     }
 }

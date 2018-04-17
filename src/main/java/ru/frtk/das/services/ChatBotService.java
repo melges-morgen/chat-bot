@@ -15,11 +15,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.frtk.das.dataasset.Params;
 import ru.frtk.das.model.ModelAttribute;
-import ru.frtk.das.model.ModelAttributeValue;
 import ru.frtk.das.model.User;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -98,12 +98,18 @@ public class ChatBotService {
             returnMessageFromFile(message.authorId(), "help message");
         } else if (SET_PATTERN.matcher(text).find()) {
             String[] array = text.split(" ");
+            if (array.length < 3) {
+                returnMessageFromFile(message.authorId(), "wrong number of parameters");
+            }
             setParam(message.authorId(), array[1], array[2]);
         } else if (GET_ALL_PATTERN.matcher(text).find()) {
             getAllParams(message.authorId());
         } else if (GET_PARAM_PATTERN.matcher(text).find()) {
             String[] array = text.split(" ");
-            getParam(message.getMessageId(), array[1]);
+            if (array.length < 2) {
+                returnMessageFromFile(message.authorId(), "wrong number of parameters");
+            }
+            getParam(message.authorId(), array[1]);
         }else if(CREATE_DOCUMENT_PATTERN.matcher(text).find()){
             createDocument(message);
         } else {
@@ -113,12 +119,13 @@ public class ChatBotService {
 
     private void returnAvailableParams(Integer userVkId) {
         String responseText = attributesService.allAttributesForProfile().stream()
+                .sorted(Comparator.comparing(ModelAttribute::getAttributeDescription))
                 .map(a -> String.format("%s - %s", a.getAttributeName(), a.getAttributeDescription()))
                 .collect(StringBuilder::new,
-                        (o, s) -> o.append('\n')
-                                .append(s),
+                        (o, s) -> o.append('\n').append(s),
                         (o1, o2) -> o1.append('\n').append(o2.toString())
-                ).toString();
+                )
+                .toString();
         returnMessage(userVkId, responseText);
     }
 
@@ -177,8 +184,8 @@ public class ChatBotService {
                         .getProfile()
                         .getAttributesValues()
                         .get(a)
-                ).map(v -> format("Значение: %s", v.value.templateValue()))
-                .orElse("Нет значения");
+                ).map(v -> format("Value: %s", v.value.templateValue()))
+                .orElse("No value");
 
         new Message()
                 .from(groupChat)

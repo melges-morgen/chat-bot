@@ -1,5 +1,6 @@
 package ru.frtk.das.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import ru.frtk.das.microtypes.TemplateValue;
 
@@ -27,8 +28,8 @@ public class ModelAttribute<T extends TemplateValue> {
     @Convert(converter = ClassConverter.class)
     private Class attributeClass;
 
-    @Column(name = "template_only", nullable = false)
-    private boolean templateOnly;
+    @Column(name = "hidden", nullable = false)
+    private boolean hidden;
 
     public static <T extends TemplateValue> ModelAttribute<T> modelAttribute(UUID id, Class<T> clazz) {
         return new ModelAttribute<T>().setId(id).setAttributeClass(clazz);
@@ -70,16 +71,17 @@ public class ModelAttribute<T extends TemplateValue> {
         return this;
     }
 
-    public boolean isTemplateOnly() {
-        return templateOnly;
+    public boolean isHidden() {
+        return hidden;
     }
 
-    public boolean isForProfile() {
-        return !templateOnly;
+    @JsonIgnore
+    public boolean isVisible() {
+        return !hidden;
     }
 
-    public ModelAttribute templateOnly(boolean templateOnly) {
-        this.templateOnly = templateOnly;
+    public ModelAttribute<T> setHidden(boolean hidden) {
+        this.hidden = hidden;
         return this;
     }
 
@@ -92,12 +94,12 @@ public class ModelAttribute<T extends TemplateValue> {
                 Objects.equals(attributeName, that.attributeName) &&
                 Objects.equals(attributeDescription, that.attributeDescription) &&
                 Objects.equals(attributeClass, that.attributeClass) &&
-                Objects.equals(templateOnly, that.templateOnly);
+                Objects.equals(hidden, that.hidden);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, attributeName, attributeDescription, attributeClass);
+        return Objects.hash(id, attributeName, attributeDescription, attributeClass, hidden);
     }
 
     @Override
@@ -107,6 +109,7 @@ public class ModelAttribute<T extends TemplateValue> {
                 ", attributeName='" + attributeName + '\'' +
                 ", attributeDescription='" + attributeDescription + '\'' +
                 ", attributeClass=" + attributeClass +
+                ", hidden=" + hidden +
                 '}';
     }
 }
