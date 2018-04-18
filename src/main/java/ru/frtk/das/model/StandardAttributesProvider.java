@@ -5,77 +5,57 @@ import ru.frtk.das.microtypes.BooleanValue;
 import ru.frtk.das.microtypes.LocalDateValue;
 import ru.frtk.das.microtypes.StringValue;
 
+import java.util.UUID;
+
 import static java.util.UUID.nameUUIDFromBytes;
-import static ru.frtk.das.model.ModelAttribute.modelAttribute;
 
 @Component
 public class StandardAttributesProvider {
-    private
+    private final static UUID NAME_ID = nameUUIDFromBytes("name".getBytes());
+    private final static UUID NAME_GEN_ID = nameUUIDFromBytes("name_gen".getBytes());
+    private final static UUID SURNAME_ID = nameUUIDFromBytes("surname".getBytes());
+    private final static UUID SURNAME_GEN_ID = nameUUIDFromBytes("surname_gen".getBytes());
+    private final static UUID BIRTH_DATE_ID = nameUUIDFromBytes("birth_date".getBytes());
+    private static final UUID TEMPLATE_NAME_ID = nameUUIDFromBytes("template_name".getBytes());
+    private static final UUID IS_MAIL_ATTRIBUTE_ID = nameUUIDFromBytes("is_male".getBytes());
+    private static final UUID DATE_TODAY_ID = nameUUIDFromBytes("date_today".getBytes());
 
-    private final static ModelAttribute<StringValue> NAME_ID =
-            modelAttribute(nameUUIDFromBytes("name".getBytes()), StringValue.class)
-                    .setAttributeName("name");
-    private final static ModelAttribute<StringValue> NAME_GEN_ID =
-            modelAttribute(nameUUIDFromBytes("name_gen".getBytes()), StringValue.class)
-                    .setAttributeName("name_gen")
-                    .setHidden(true);
+    private final ModelAttributeRepository modelAttributeRepo;
 
-    private final static ModelAttribute<StringValue> SURNAME_ID =
-            modelAttribute(nameUUIDFromBytes("surname".getBytes()), StringValue.class)
-                    .setAttributeName("surname");
-    private final static ModelAttribute<StringValue> SURNAME_GEN_ID =
-            modelAttribute(nameUUIDFromBytes("surname_gen".getBytes()), StringValue.class)
-                    .setAttributeName("surname_gen")
-                    .setHidden(true);
 
-    private final static ModelAttribute<LocalDateValue> BIRTH_DATE_ID =
-            modelAttribute(nameUUIDFromBytes("birth_date".getBytes()), LocalDateValue.class)
-                    .setAttributeName("birth_date");
-
-    private static final ModelAttribute<StringValue> TEMPLATE_NAME_ID =
-            modelAttribute(nameUUIDFromBytes("template_name".getBytes()), StringValue.class)
-                    .setAttributeName("template_name")
-                    .setHidden(true);
-
-    private static final ModelAttribute<BooleanValue> IS_MAIL_ATTRIBUTE_ID =
-            modelAttribute(nameUUIDFromBytes("is_male".getBytes()), BooleanValue.class)
-                    .setAttributeName("is_male")
-                    .setHidden(true);
-
-    private static final ModelAttribute<LocalDateValue> DATE_TODAY_ID =
-            modelAttribute(nameUUIDFromBytes("date_today".getBytes()), LocalDateValue.class)
-                    .setAttributeName("date_today")
-                    .setHidden(true);
+    public StandardAttributesProvider(ModelAttributeRepository modelAttributeRepo) {
+        this.modelAttributeRepo = modelAttributeRepo;
+    }
 
     public ModelAttribute<StringValue> nameAttribute() {
-        return NAME_ID;
+        return modelAttributeRepo.getOne(NAME_ID);
     }
 
     public ModelAttribute<StringValue> nameGenAttribute() {
-        return NAME_GEN_ID;
+        return modelAttributeRepo.getOne(NAME_GEN_ID);
     }
 
     public ModelAttribute<StringValue> surnameAttribute() {
-        return SURNAME_ID;
+        return modelAttributeRepo.getOne(SURNAME_ID);
     }
 
     public ModelAttribute<StringValue> surnameGenAttribute() {
-        return SURNAME_GEN_ID;
+        return modelAttributeRepo.getOne(SURNAME_GEN_ID);
     }
 
     public ModelAttribute<LocalDateValue> birthDateAttribute() {
-        return BIRTH_DATE_ID;
+        return modelAttributeRepo.getOne(BIRTH_DATE_ID);
     }
 
     public ModelAttribute<StringValue> templateNameAttribute() {
-        return TEMPLATE_NAME_ID;
+        return modelAttributeRepo.getOne(TEMPLATE_NAME_ID);
     }
 
     public ModelAttribute<BooleanValue> isMaleAttribute() {
-        return IS_MAIL_ATTRIBUTE_ID;
+        return modelAttributeRepo.getOne(IS_MAIL_ATTRIBUTE_ID);
     }
 
     public ModelAttribute<LocalDateValue> dateTodayAttribute() {
-        return DATE_TODAY_ID;
+        return modelAttributeRepo.getOne(DATE_TODAY_ID);
     }
 }
