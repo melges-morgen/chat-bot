@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 import static ru.frtk.das.microtypes.LocalDateValue.localDateValue;
 import static ru.frtk.das.microtypes.StringValue.stringValue;
 import static ru.frtk.das.model.ModelAttributeValue.modelAttributeValue;
-import static ru.frtk.das.model.StandardAttributesProvider.dateTodayAttribute;
-import static ru.frtk.das.model.StandardAttributesProvider.templateNameAttribute;
 import static ru.frtk.das.services.document.DocumentPdfRender.render;
 import static ru.frtk.das.utils.Result.resultOf;
 
@@ -25,12 +23,15 @@ import static ru.frtk.das.utils.Result.resultOf;
 public class DocumentService {
     private final TemplateRepository templateRepository;
     private final UserProfileRepository userProfileRepository;
+    private final StandardAttributesProvider standardAttributesProvider;
 
     @Autowired
     public DocumentService(final TemplateRepository templateRepository,
-                           final UserProfileRepository userProfileRepository) {
+                           final UserProfileRepository userProfileRepository,
+                           final StandardAttributesProvider standardAttributesProvider) {
         this.templateRepository = templateRepository;
         this.userProfileRepository = userProfileRepository;
+        this.standardAttributesProvider = standardAttributesProvider;
     }
 
     public Result<byte[]> generateDocument(
@@ -51,12 +52,18 @@ public class DocumentService {
                 )
                 .putAll(additionalAttributes)
                 .put(
-                        templateNameAttribute().getAttributeName(),
-                        modelAttributeValue(templateNameAttribute(), stringValue(template.getTemplateName()))
+                        standardAttributesProvider.templateNameAttribute().getAttributeName(),
+                        modelAttributeValue(
+                                standardAttributesProvider.templateNameAttribute(),
+                                stringValue(template.getTemplateName())
+                        )
                 )
                 .put(
-                        dateTodayAttribute().getAttributeName(),
-                        modelAttributeValue(dateTodayAttribute(), localDateValue(LocalDate.now()))
+                        standardAttributesProvider.dateTodayAttribute().getAttributeName(),
+                        modelAttributeValue(
+                                standardAttributesProvider.dateTodayAttribute(),
+                                localDateValue(LocalDate.now())
+                        )
                 )
                 .build();
 

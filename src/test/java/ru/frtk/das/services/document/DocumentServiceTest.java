@@ -37,7 +37,7 @@ public class DocumentServiceTest {
     public void setUp() {
         templateRepository = mock(TemplateRepository.class);
         userProfileRepository = mock(UserProfileRepository.class);
-        sut = new DocumentService(templateRepository, userProfileRepository);
+        sut = new DocumentService(templateRepository, userProfileRepository, standardAttributesProvider);
     }
 
     @Test
