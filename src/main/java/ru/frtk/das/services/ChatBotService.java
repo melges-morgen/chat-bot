@@ -179,13 +179,10 @@ public class ChatBotService {
             return;
         }
 
-        String responseText = attributesService.findAttribute(param)
-                .map(a -> userService.userByVkIdOrRegister(userId.longValue())
-                        .getProfile()
-                        .getAttributesValues()
-                        .get(a)
-                ).map(v -> format("Value: %s", v.value.templateValue()))
-                .orElse("No value");
+        String responseText =
+                attributesService.attributeValue(param, userService.userByVkIdOrRegister(userId.longValue()))
+                        .map(v -> format("Value: %s", v.value.templateValue()))
+                        .orElse("No value");
 
         new Message()
                 .from(groupChat)

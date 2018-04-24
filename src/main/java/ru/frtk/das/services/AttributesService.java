@@ -3,8 +3,7 @@ package ru.frtk.das.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.frtk.das.microtypes.TemplateValue;
-import ru.frtk.das.model.ModelAttribute;
-import ru.frtk.das.model.ModelAttributeRepository;
+import ru.frtk.das.model.*;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -12,11 +11,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class AttributesService {
+    private final UserProfileRepository userProfileRepo;
     private final ModelAttributeRepository modelAttributeRepo;
+    private final StandardAttributesProvider standardAttributesProvider;
 
     @Autowired
-    public AttributesService(ModelAttributeRepository modelAttributeRepo) {
+    public AttributesService(UserProfileRepository userProfileRepo,
+                             ModelAttributeRepository modelAttributeRepo,
+                             StandardAttributesProvider standardAttributesProvider) {
+        this.userProfileRepo = userProfileRepo;
         this.modelAttributeRepo = modelAttributeRepo;
+        this.standardAttributesProvider = standardAttributesProvider;
     }
 
     public boolean isSupportedAttribute(String attributeName) {
@@ -32,5 +37,12 @@ public class AttributesService {
         return modelAttributeRepo.findAll().stream()
                 .filter(ModelAttribute::isVisible)
                 .collect(Collectors.toSet());
+    }
+
+    public Optional<ModelAttributeValue> attributeValue(String attributeName, User user) {
+        if (standardAttributesProvider.isStandardByName(attributeName)) {
+
+        }
+        return userProfileRepo.getUserProfileByUser(user). ;
     }
 }

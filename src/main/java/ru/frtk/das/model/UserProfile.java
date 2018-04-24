@@ -12,12 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import static ru.frtk.das.microtypes.BooleanValue.booleanValue;
-import static ru.frtk.das.microtypes.LocalDateValue.localDateValue;
-import static ru.frtk.das.microtypes.StringValue.stringValue;
-import static ru.frtk.das.model.ModelAttributeValue.modelAttributeValue;
-import static ru.frtk.das.model.UserProfile.Gender.MALE;
-
 @Entity
 @Table(name = "user_profile")
 public class UserProfile {
@@ -112,10 +106,6 @@ public class UserProfile {
             ModelAttributeValue<? extends TemplateValue>> getAttributesValues() {
         return ImmutableMap.<ModelAttribute<?>, ModelAttributeValue<?>>builder()
                 .putAll(attributesValues)
-                .put(nameAttribute(), modelAttributeValue(nameAttribute(), stringValue(name)))
-                .put(surnameAttribute(), modelAttributeValue(surnameAttribute(), stringValue(surname)))
-                .put(birthDateAttribute(), modelAttributeValue(birthDateAttribute(), localDateValue(birthDate)))
-                .put(isMaleAttribute(), modelAttributeValue(isMaleAttribute(), booleanValue(gender == MALE)))
                 .build();
     }
 

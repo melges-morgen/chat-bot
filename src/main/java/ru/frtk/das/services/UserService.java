@@ -45,11 +45,4 @@ public class UserService {
                 .isPresent();
 
     }
-
-//    public Map<ModelAttribute<?>, ModelAttributeValue<?>> userAttributesValues(long userId) {
-//        return userByVkIdOrRegister(userId)
-//                .getProfile()
-//                .getAttributesValues()
-//                .put();
-//    }
 }
